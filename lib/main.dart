@@ -9,7 +9,7 @@ void main() {
   runApp(MaterialApp(
     title: "ScanDoc",
     theme: ThemeData(backgroundColor: Colors.white),
-    initialRoute: 'logo_screen',
+    initialRoute: 'scan_screen',
     routes: {
       'logo_screen': (context) => LogoScreen(),
       'scan_screen': (context) => ScanScreen(),
