@@ -163,7 +163,117 @@ class _DocumentTileState extends State<DocumentTile> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  showModalBottomSheet(
+                      context: context,
+                      builder: (ctx) {
+                        return Container(
+                            height: MediaQuery.of(context).size.height * 0.4,
+                            color: Colors.black,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  flex: 1,
+                                  child: TextButton(
+                                      onPressed: () {},
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.drive_file_rename_outline,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10)),
+                                          Text(
+                                            "Modify",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextButton(
+                                      onPressed: () {},
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.edit_rounded,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10)),
+                                          Text(
+                                            "Rename",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                Expanded(
+                                  flex: 1,
+                                  child: TextButton(
+                                      onPressed: () {},
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.photo_library_rounded,
+                                            color: Colors.white,
+                                            size: 30,
+                                          ),
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10)),
+                                          Text(
+                                            "Save as JPEG",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                                Divider(
+                                  color: Colors.grey,
+                                  indent: 10,
+                                  endIndent: 10,
+                                ),
+                                Expanded(
+                                  child: TextButton(
+                                      onPressed: () {},
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.delete_rounded,
+                                            color: Colors.red,
+                                            size: 30,
+                                          ),
+                                          Padding(
+                                              padding:
+                                                  EdgeInsets.only(right: 10)),
+                                          Text(
+                                            "Delete",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18),
+                                          ),
+                                        ],
+                                      )),
+                                ),
+                              ],
+                            ));
+                      });
+                },
                 icon: Icon(
                   Icons.more_vert,
                   color: Colors.white,
