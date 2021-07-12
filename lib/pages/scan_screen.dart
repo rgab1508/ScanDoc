@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
+import 'dart:io';
+import 'package:permission_handler/permission_handler.dart';
 
 class ScanScreen extends StatefulWidget {
   @override
@@ -7,6 +10,54 @@ class ScanScreen extends StatefulWidget {
 
 class _ScanScreenState extends State<ScanScreen> {
   var flashState = 0;
+  CameraController controller;
+  List<File> _images = [];
+  bool _controllerLoaded = false;
+  File currImage;
+
+  @override
+  void initState() {
+    super.initState();
+    asyncInitState();
+  }
+
+  @override
+  void dispose() {
+    controller?.dispose();
+    super.dispose();
+  }
+
+  void asyncInitState() async {
+    final filePermStatus = await Permission.storage.status;
+    if (filePermStatus.isDenied) {
+      final req = await Permission.storage.request();
+      if (req.isGranted) {}
+      if (req.isDenied) {
+        // todo exit App here
+      }
+    }
+
+    final cameras = await availableCameras();
+    controller =
+        CameraController(cameras[0], ResolutionPreset.max, enableAudio: false);
+    controller.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {
+        _controllerLoaded = true;
+      });
+    });
+  }
+
+  void addImage() async {
+    var img = await controller.takePicture();
+
+    setState(() {
+      _images.add(File(img.path));
+      print(_images);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +69,15 @@ class _ScanScreenState extends State<ScanScreen> {
           },
           icon: Icon(Icons.home),
         ),
+        actions: [
+          Visibility(
+              visible: _images.length > 0,
+              child: Container(
+                alignment: Alignment.center,
+                child: Text("${_images.length} pages",
+                    style: TextStyle(fontSize: 16)),
+              ))
+        ],
         backgroundColor: Colors.black,
         elevation: 0,
       ),
@@ -29,6 +89,9 @@ class _ScanScreenState extends State<ScanScreen> {
               child: SizedBox(
                 child: Container(
                   color: Colors.pink[50],
+                  child: !_controllerLoaded
+                      ? Container()
+                      : CameraPreview(controller),
                 ),
               ),
             ),
@@ -45,6 +108,13 @@ class _ScanScreenState extends State<ScanScreen> {
                         onTap: () {
                           var next = flashState + 1;
                           if (next >= 3) next = 0;
+                          if (next == 0) {
+                            controller.setFlashMode(FlashMode.off);
+                          } else if (next == 1) {
+                            controller.setFlashMode(FlashMode.auto);
+                          } else {
+                            controller.setFlashMode(FlashMode.always);
+                          }
                           setState(() {
                             flashState = next;
                           });
@@ -64,6 +134,9 @@ class _ScanScreenState extends State<ScanScreen> {
                   Expanded(
                       flex: 2,
                       child: GestureDetector(
+                        onTap: () {
+                          addImage();
+                        },
                         child: Icon(
                           Icons.radio_button_off_rounded,
                           size: 100,
@@ -74,7 +147,12 @@ class _ScanScreenState extends State<ScanScreen> {
                       flex: 1,
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.of(context).pushNamed('result_screen');
+                          controller.dispose();
+                          Navigator.of(context).pushReplacementNamed(
+                              'result_screen',
+                              arguments: <String, List<File>>{
+                                "images": _images
+                              });
                         },
                         child: Icon(
                           Icons.arrow_forward_ios_rounded,
